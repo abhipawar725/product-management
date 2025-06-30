@@ -2,6 +2,7 @@ import User from "../models/userModel.js"
 import sendResponse from "../utils/sendResponse.js"
 import bcrypt from "bcrypt"
 import jwt from "jsonwebtoken"
+import multer from "multer"
 
 export const GetSignup = (req, res) => {
     res.render('signup')
@@ -53,6 +54,33 @@ export const Login = async (req, res) => {
   }   
 }
 
-export const Dashboard = (req, res) => {
-    res.render('dashboard') 
+export const Dashboard = async (req, res) => {
+   try {
+    const {id} = req.user
+    const user = await User.findById(id)
+    res.render('dashboard', {user})        
+   } catch (error) {
+    console.log(error.message);
+   }
+}
+
+export const Logout = (req, res) => {
+    res.clearCookie("token")
+    res.redirect('login')
+}
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+     cb(null, "/uploads/profile")
+  },
+  filename: (req, file, cb) => {
+    cb(null, `${req.user.filename}-${file.originalname}`)
+  }
+})
+
+export const upload = multer({storage})
+
+export const UpdateProfile = (req, res) => {
+  console.log(req.user)
+  console.log("test");
 }

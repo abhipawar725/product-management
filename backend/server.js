@@ -3,13 +3,22 @@ import express from "express"
 import connectDB from "./config/connectDB.js"
 import userRoute from "./routes/userRoute.js"
 import cookieParser from "cookie-parser"
+import path, { dirname } from "path"
+import { fileURLToPath } from "url"
 
 dotenv.config()
 const app = express()
 
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = dirname(__filename)
+
+console.log(__filename);
+console.log(__dirname)
+
 app.use(express.json())
 app.use(express.urlencoded({extended: false}))
 app.use(cookieParser())
+app.use("/uploads", express.static(path.join(__dirname, "uploads")))
 app.set("view engine", "ejs")
 
 app.use("/", userRoute)
