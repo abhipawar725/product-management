@@ -13,24 +13,54 @@
 
 <body>
     <div class="flex bg-slate-200 min-h-screen">
-       <aside class="fixed min-h-screen bg-white shadow-sm w-[280px]">
-        <div class="flex flex-col gap-2 mb-6 text-center p-6 border-b border-slate-300">
-            <div class="relative w-20 h-20 rounded-full overflow-hidden mx-auto">
-                <img src="" alt=<%= user.fullname %> class="border border-slate-300 w-20 h-20 rounded-full" />
-                <input type="file" class="absolute top-0 left-0 w-full h-full opacity-0"> 
+        <aside class="fixed min-h-screen bg-white shadow-sm w-[280px]">
+            <div class="flex flex-col gap-2 mb-6 text-center p-6 border-b border-slate-300">
+                <div class="relative w-20 h-20 rounded-full overflow-hidden mx-auto">
+                    <img src=<%=user.picture %> alt=<%=user.fullname %> id="profile-picture" class="border border-slate-300 w-20 h-20
+                    rounded-full" />
+                    <input type="file" class="absolute top-0 left-0 w-full h-full opacity-0" name="picture"
+                        onchange="UpdateProfile(event)">
+                </div>
+                <h5 class="font-medium">
+                    <%= user.fullname %>
+                </h5>
+                <p>
+                    <%= user.email %>
+                </p>
             </div>
-            <h5 class="font-medium"><%= user.fullname %></h5>
-            <p><%= user.email %></p>
-        </div>
             <nav class="p-5">
                 <ul>
-                    <li><a href="#" class="flex items-center gap-3 p-3 rounded hover:bg-slate-100"><i class="ri-dashboard-line"></i>Dashboard</a></li>
-                    <li><a href="#" class="flex items-center gap-3 p-3 rounded hover:bg-slate-100"><i class="ri-store-line"></i>Products</a></li>
-                    <li><a href="/logout" class="flex items-center gap-3 p-3 rounded hover:bg-slate-100"><i class="ri-logout-box-r-line"></i>Logout</a></li>
+                    <li><a href="#" class="flex items-center gap-3 p-3 rounded hover:bg-slate-100"><i
+                                class="ri-dashboard-line"></i>Dashboard</a></li>
+                    <li><a href="#" class="flex items-center gap-3 p-3 rounded hover:bg-slate-100"><i
+                                class="ri-store-line"></i>Products</a></li>
+                    <li><a href="/logout" class="flex items-center gap-3 p-3 rounded hover:bg-slate-100"><i
+                                class="ri-logout-box-r-line"></i>Logout</a></li>
                 </ul>
             </nav>
-       </aside> 
+        </aside>
     </div>
+    <script>
+        const UpdateProfile = async (e) => {
+            const file = e.target.files[0]
+            const formdata = new FormData()
+            formdata.append('picture', file)
+            try {
+                const res = await axios.post("http://localhost:8080/api/profile/upload", formdata)
+                Swal.fire({
+                    text: res.data.message,
+                    icon: "success"
+                });
+                const picture = document.getElementById('profile-picture')
+                picture.setAttribute("src", res.data.picture)
+            } catch (error) {
+                Swal.fire({
+                    text: error.response.data.message,
+                    icon: "error"
+                });
+            }
+        }  
+    </script>
 </body>
 
 </html>

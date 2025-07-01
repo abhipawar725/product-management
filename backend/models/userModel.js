@@ -20,6 +20,15 @@ const userSchema = new Schema({
         required: [true, "Password is required"],
         trim: true,
         match: [/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/, "Password is invalid"]
+    },
+    picture: {
+        type: String,
+        trim: true
+    },
+    role: {
+        type: String,
+        enum: ["user", "admin"],
+        default: "user"
     }
 },{timestamps: true})
 
