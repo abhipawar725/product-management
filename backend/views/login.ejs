@@ -46,9 +46,7 @@
                     icon: "success"
                 });
                 form.reset()
-                if(res.data.redirect){
-                    window.location.href = res.data.redirect
-                }  
+                    window.location.href = 'dashboard'
             } catch (error) {
                 Swal.fire({
                     text: error.response.data.message,

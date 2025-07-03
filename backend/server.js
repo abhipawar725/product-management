@@ -5,6 +5,7 @@ import userRoute from "./routes/userRoute.js"
 import cookieParser from "cookie-parser"
 import path, { dirname } from "path"
 import { fileURLToPath } from "url"
+import productRouter from "./routes/productRoute.js"
 
 dotenv.config()
 const app = express()
@@ -20,6 +21,7 @@ app.use("/uploads", express.static(path.join(__dirname,  "uploads")))
 app.set("view engine", "ejs")
 
 app.use("/", userRoute)
+app.use("/", productRouter)
 
 connectDB()
 

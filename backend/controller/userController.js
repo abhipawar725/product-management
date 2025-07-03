@@ -1,5 +1,6 @@
 import User from "../models/userModel.js"
 import sendResponse from "../utils/sendResponse.js"
+import { sendToken } from "../utils/token.js"
 import bcrypt from "bcrypt"
 import jwt from "jsonwebtoken"
 import multer from "multer"
@@ -46,9 +47,7 @@ export const Login = async (req, res) => {
     const ismatch = await bcrypt.compare(password, user.password)
     if(!ismatch) return sendResponse(res, 409, "Incorrect password")
 
-    const token = jwt.sign({id: user._id}, process.env.JWT_SECRET, {expiresIn: '1d'})
-    res.cookie("token", token, {httpOnly: true}) 
-    res.status(200).json({message: "Login successfully", redirect: 'dashboard'})    
+    sendToken(user, res, "Login successfully")  
   } catch (error) {
     sendResponse(res, 500, error.message)
   }   
