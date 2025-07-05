@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.10.0/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.css" />
+    <title>Document</title>
+</head>
+
+<body>
+    <div class="wrapper">
+        <header></header>
+        <%- include('partials/sidebar') %>
+        <main class="p-6 ml-[280px] min-h-screen overflow-auto bg-slate-100" style="width: calc(100% - 280px);">
+            <%- body %>
+        </main>
+    </div>
+    <%- include('partials/footer') %>
+</body>
+  
+</html>

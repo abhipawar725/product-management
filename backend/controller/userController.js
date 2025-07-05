@@ -2,15 +2,14 @@ import User from "../models/userModel.js"
 import sendResponse from "../utils/sendResponse.js"
 import { sendToken } from "../utils/token.js"
 import bcrypt from "bcrypt"
-import jwt from "jsonwebtoken"
 import multer from "multer"
 
 export const GetSignup = (req, res) => {
-    res.render('signup')
+    res.render('auth/signup')
 }
 
 export const GetLogin = (req, res) => {
-    res.render('login')
+    res.render('auth/login')
 }
 
 export const Signup = async (req, res) => {
@@ -58,7 +57,7 @@ export const Dashboard = async (req, res) => {
     const {id} = req.user
     const user = await User.findById(id)  
     
-    res.render('dashboard', {user})        
+    res.render('products/dashboard', {user})        
    } catch (error) {
     console.log(error.message);
    }

@@ -1,0 +1,31 @@
+    <script>
+        const UpdateProfile = async (e) => {
+            const file = e.target.files[0]
+            const formdata = new FormData()
+            formdata.append('picture', file)
+            try {
+                const res = await axios.post("http://localhost:8080/api/profile/upload", formdata)
+                Swal.fire({
+                    text: res.data.message,
+                    icon: "success"
+                });
+                const picture = document.getElementById('profile-picture')
+                picture.setAttribute("src", res.data.picture)
+            } catch (error) {
+                Swal.fire({
+                    text: error.response.data.message,
+                    icon: "error"
+                });
+            }
+        }  
+    </script>
+
+        <script>
+        const getData = () => {
+            const res = axios.get("http://localhost:8080/api/product")
+            res.then((res) => {
+                console.log(res.data.data);
+            })
+        }
+        getData()
+    </script>
