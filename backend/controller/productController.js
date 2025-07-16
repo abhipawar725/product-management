@@ -2,22 +2,19 @@ import Product from "../models/productModel.js";
 import sendResponse from "../utils/sendResponse.js";
 
 export const createProduct = async (req, res) => {
+    console.log(req.body);
+    
     try {
-        const { title, price, desc } = req.body
-        const image = req.file?.filename
+        const { title, price } = req.body
+
+         console.log(req.body);
 
         if (!title || !price) return sendResponse(res, 400, "Title and price are required")
 
         const ExistingProduct = await Product.findOne({ title })
         if (ExistingProduct) return sendResponse(res, 401, "Product already exists")
 
-        const product = await Product.create({
-            title,
-            desc,
-            price,
-            image,
-            createdBy: req.user._id
-        })
+        const product = await Product.create(req.body)
 
         sendResponse(res, 201, "Product added successfully", product)
     } catch (error) {

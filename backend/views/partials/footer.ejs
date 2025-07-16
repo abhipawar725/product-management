@@ -1,31 +1,55 @@
-    <script>
-        const UpdateProfile = async (e) => {
-            const file = e.target.files[0]
-            const formdata = new FormData()
-            formdata.append('picture', file)
-            try {
-                const res = await axios.post("http://localhost:8080/api/profile/upload", formdata)
-                Swal.fire({
-                    text: res.data.message,
-                    icon: "success"
-                });
-                const picture = document.getElementById('profile-picture')
-                picture.setAttribute("src", res.data.picture)
-            } catch (error) {
-                Swal.fire({
-                    text: error.response.data.message,
-                    icon: "error"
-                });
-            }
-        }  
-    </script>
-
-        <script>
-        const getData = () => {
-            const res = axios.get("http://localhost:8080/api/product")
-            res.then((res) => {
-                console.log(res.data.data);
-            })
+<script>
+    const UpdateProfile = async (e) => {
+        const file = e.target.files[0]
+        const formdata = new FormData()
+        formdata.append('picture', file)
+        try {
+            const res = await axios.post("http://localhost:8080/api/profile/upload", formdata)
+            Swal.fire({
+                text: res.data.message,
+                icon: "success"
+            });
+            console.log(res.data.picture);
+            
+            const picture = document.getElementById('profile-picture')
+            picture.setAttribute("src", res.data.picture)
+        } catch (error) {
+            Swal.fire({
+                text: error.response.data.message,
+                icon: "error"
+            });
         }
-        getData()
-    </script>
+    }  
+</script>
+
+<script>
+    const createProduct = async (e) => {
+        e.preventDefault();
+        const form = e.target;
+        const formData = new FormData(form);
+
+        const image = document.querySelector("#product_image");
+        const productImage = image.files[0];
+        formData.append('image', productImage); // already part of form, but safe to do again
+          for (const [key, value] of formData.entries()) {
+            console.log(key, value);
+            
+          }
+          
+        try {
+            const res = await axios.post("http://localhost:8080/api/product/create", formData);
+
+            Swal.fire({
+                text: res.data.message,
+                icon: "success"
+            });
+            form.reset();
+        } catch (error) {
+            Swal.fire({
+                text: error.response?.data?.message || "Something went wrong!",
+                icon: "error"
+            });
+        }
+    }
+
+</script>

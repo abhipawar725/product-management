@@ -1,25 +1,84 @@
 <% layout('layout') %>
-    <div class="card bg-white shadow-sm rounded-sm">
-        <div class="card-header border-b border-slate-400 p-4 font-medium">Product List</div>
-        <div class="card-body p-4">
-            <table class="w-full text-left">
-                <thead>
-                    <tr>
-                        <th class="border border-slate-100 font-medium p-2">S. No.</th>
-                        <th class="border border-slate-100 font-medium p-2">Image</th>
-                        <th class="border border-slate-100 font-medium p-2">Product</th>
-                        <th class="border border-slate-100 font-medium p-2">Desc</th>
-                        <th class="border border-slate-100 font-medium p-2">Price</th>
-                        <th class="border border-slate-100 font-medium p-2">Created Date</th>
-                        <th class="border border-slate-100 font-medium p-2">Action</th>
-                    </tr>
-                </thead>
-                <tbody class="product-list">
-                    <tr>
-                        <td></td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+  <div class="card bg-white shadow-sm rounded-sm">
+    <div class="card-header border-b border-slate-400 p-4 font-medium flex items-center justify-between gap-4">Product
+      List <a href="/product/create"
+        class="px-5 py-2 flex items-center gap-1 bg-indigo-600 rounded text-white text-sm">Add</a></div>
+    <div class="card-body p-4">
+      <table class="w-full text-left">
+        <thead>
+          <tr>
+            <th class="border border-slate-100 font-medium p-2">S. No.</th>
+            <th class="border border-slate-100 font-medium p-2">Image</th>
+            <th class="border border-slate-100 font-medium p-2">Product</th>
+            <th class="border border-slate-100 font-medium p-2">Desc</th>
+            <th class="border border-slate-100 font-medium p-2">Price</th>
+            <th class="border border-slate-100 font-medium p-2">Created Date</th>
+            <th class="border border-slate-100 font-medium p-2">Action</th>
+          </tr>
+        </thead>
+        <tbody id="product-list">
+          <tr>
+            <td></td>
+          </tr>
+        </tbody>
+      </table>
     </div>
+  </div>
+  <script>
+    const getData = async () => {
+      const container = document.querySelector("#product-list")
+      if (!container) {
+        console.error("Missing #product-list in DOM!")
+        return
+      }
 
+      try {
+        const res = await axios.get("http://localhost:8080/api/product", {
+          withCredentials: true
+        })
+
+        const products = res.data.data
+        container.innerHTML = ""
+        products.forEach((item, index) => {
+          const row = `<tr>
+            <td class="border border-slate-100 p-2">${index + 1}</td>
+            <td class="border border-slate-100 p-2"><img src="${item.image || '-'}" class="w-12 h-12 object-cover" /></td>
+            <td class="border border-slate-100 p-2">${item.title}</td>
+            <td class="border border-slate-100 p-2">${item.desc}</td>
+            <td class="border border-slate-100 p-2">₹${item.price}</td>
+            <td class="border border-slate-100 p-2">${moment(item.createdAt).format("DD/MM/YYYY")}</td>
+            <td class="border border-slate-100 p-2">
+              <div class="flex items-center gap-2">
+              <a href="javascript:void(0);" class="bg-green-600 w-8 h-8 rounded-full flex items-center justify-center text-white text-sm" onclick="editProduct('${item._id}')"><i class="ri-edit-2-line"></i></a>
+              <a href="javascript:void(0);" class="bg-red-600 w-8 h-8 rounded-full flex items-center justify-center text-white text-sm" onclick="deleteProduct('${item._id}')"><i class="ri-delete-bin-6-line"></i></a>  
+              </div>
+              </td>
+          </tr>`
+          container.innerHTML += row
+        })
+      } catch (error) {
+        console.error("Axios Error:", error.message)
+        if (error.response) {
+          console.error("Response:", error.response.data)
+        }
+      }
+    }
+
+    document.addEventListener("DOMContentLoaded", getData)
+
+    const deleteProduct = async (id) => {
+      try {
+        const res = await axios.delete(`http://localhost:8080/api/product/delete/${id}`)
+        Swal.fire({
+          text: res.data.message,
+          icon: "success"
+        });
+        getData()
+      } catch (error) {
+        Swal.fire({
+          text: error.response.data.message,
+          icon: "error"
+        });
+      }
+    }
+  </script>

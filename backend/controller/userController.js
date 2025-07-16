@@ -55,8 +55,7 @@ export const Login = async (req, res) => {
 export const Dashboard = async (req, res) => {
    try {
     const {id} = req.user
-    const user = await User.findById(id)  
-    
+    const user = await User.findById(id)          
     res.render('products/dashboard', {user})        
    } catch (error) {
     console.log(error.message);
@@ -82,24 +81,24 @@ export const upload = multer({storage})
 
 export const UpdateProfile = async (req, res) => {
   try {
-    const path = req.file.path.replace(/\\/g, "/")
-    
-    if (!req.file) return sendResponse(res, 400, "No file uploaded")
-  
-    const {id} = req.user
-    if(!id) return sendResponse(res, 401, "invalid request id")
+    if (!req.file) return sendResponse(res, 400, "No file uploaded");
 
-    const profile = await User.findById(id)
-    if(!profile) return sendResponse(res, 404, "user not found")
-    
-    const user = await User.findByIdAndUpdate(id, {picture: path}, {new: true})    
-    
+    const path = '/' + req.file.path.replace(/\\/g, "/"); // ✅ fix here
+
+    const { id } = req.user;
+    if (!id) return sendResponse(res, 401, "invalid request id");
+
+    const profile = await User.findById(id);
+    if (!profile) return sendResponse(res, 404, "user not found");
+
+    const user = await User.findByIdAndUpdate(id, { picture: path }, { new: true });
+
     res.status(200).json({
       message: 'profile picture updated successfully',
-      picture: user.picture
-    })
-    
+      picture: user.picture // will now start with "/"
+    });
+
   } catch (error) {
-   sendResponse(res, 500, error.message) 
+    sendResponse(res, 500, error.message);
   }
-}
+};
