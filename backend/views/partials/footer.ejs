@@ -26,19 +26,9 @@
     const createProduct = async (e) => {
         e.preventDefault();
         const form = e.target;
-        const formData = new FormData(form);
-
-        const image = document.querySelector("#product_image");
-        const productImage = image.files[0];
-        formData.append('image', productImage); // already part of form, but safe to do again
-          for (const [key, value] of formData.entries()) {
-            console.log(key, value);
-            
-          }
-          
+        const formData = new FormData(form);        
         try {
-            const res = await axios.post("http://localhost:8080/api/product/create", formData);
-
+            const res = await axios.post("http://localhost:8080/api/product/create", formData, {withCredentials: true});
             Swal.fire({
                 text: res.data.message,
                 icon: "success"

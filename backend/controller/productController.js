@@ -2,19 +2,26 @@ import Product from "../models/productModel.js";
 import sendResponse from "../utils/sendResponse.js";
 
 export const createProduct = async (req, res) => {
-    console.log(req.body);
     
     try {
-        const { title, price } = req.body
-
-         console.log(req.body);
+        const image = req.file.path.replace(/\\/g, '/')
+        
+        const { title, price, desc } = req.body
 
         if (!title || !price) return sendResponse(res, 400, "Title and price are required")
 
         const ExistingProduct = await Product.findOne({ title })
         if (ExistingProduct) return sendResponse(res, 401, "Product already exists")
 
-        const product = await Product.create(req.body)
+       const productData = {
+        title,
+        price
+       }
+
+       if (desc) productData.desc = desc
+       if (image) productData.image = image
+
+        const product = await Product.create(productData)
 
         sendResponse(res, 201, "Product added successfully", product)
     } catch (error) {
@@ -23,6 +30,8 @@ export const createProduct = async (req, res) => {
 }
 
 export const readProducts = async (req, res) => {
+    console.log(req.query);
+    
     try {
         const products = await Product.find()
         sendResponse(res, 200, "get product successfully", products)
@@ -45,9 +54,17 @@ export const readProductById = async (req, res) => {
 export const updateProductById = async (req, res) => {
     try {
         const { id } = req.params
-        const product = await Product.findByIdAndUpdate(id, req.body, {new: true})
+        const updatedData = {
+            ...req.body
+        }
+
+        if(req.file){
+            updatedData.image = req.file.path.replace(/\\/g, '/')
+        }
+
+        const product = await Product.findByIdAndUpdate(id, updatedData, {new: true})
         if (!product) return sendResponse(res, 404, "product not found")
-            sendResponse(res, 200, "product updated successfully")
+            sendResponse(res, 200, "product updated successfully", {product})
     } catch (error) {
         sendResponse(res, 500, error.message)
     }
